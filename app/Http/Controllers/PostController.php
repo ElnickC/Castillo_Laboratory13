@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\User;
 use App\Models\Post;
 
 use Illuminate\Http\Request;
@@ -12,8 +13,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->get();
-        return view('posts.index', ['posts' => $posts]);
+        $user = User::where('id', '=', session('loginId'))->first();
+        $userData = post::where('user_id', '=', $user->id)->get();
+        return view('posts.show', ['userData' => $userData, 'user' => $user]);
     }
 
     /**
@@ -21,7 +23,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('posts.create');
+        $pass = session('loginId');
+        return view('posts.create',['getId' => $pass]);
     }
 
     /**
@@ -29,12 +32,17 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        Post::create([
-            'title' => $request->title,
-            'body' => $request->body,
+        $request->validate([
+            'title' => 'required|min:2',
+            'body' => 'required|min:2'
         ]);
 
-        return redirect('/posts');
+        post::create([
+            'title' => $request->title,
+            'body' => $request->body,
+            'user_id' => $request->getId
+        ]);
+        return redirect(route('posts.show'));
     }
 
     /**
@@ -42,15 +50,15 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view('posts.show', ['post' => $post]);
-    }
+    //     return view('posts.show', ['post' => $post]);
+    // }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
-    {
-        return view('posts.edit', ['post' => $post]);
+    // /**
+    //  * Show the form for editing the specified resource.
+    //  */
+    // public function edit(Post $post)
+    // {
+    //     return view('posts.edit', ['post' => $post]);
     }
 
     /**

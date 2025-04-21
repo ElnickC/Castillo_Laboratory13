@@ -15,7 +15,7 @@
                       <h1 class="mb-3">Login</h1>
                        <form method="POST" action="/login">
                           @csrf
-                          <input class="form-control mb-3" name="email" type="email" placeholder="Email" required>
+                          <input class="form-control mb-3" name="email" type="email" placeholder="Email" value="{{old('email')}}" required>
                           <input class="form-control mb-3" name="password" type="password" placeholder="Password" required>
                           <button class="w-100 btn btn-primary mb-3" type="submit">Login</button>
                           <p class="text-center">Dont have an account? <a href="/register">Register</a></p>
